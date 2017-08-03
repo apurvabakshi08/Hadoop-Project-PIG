@@ -12,3 +12,5 @@
 2.piggybank.jar.zip-Required to use CobinedLogLoader() and DateExtrator()
 
 3.Code.txt-File contains PIG latin scripts.(Actual code)
+
+4.Weblog Analysis-PIG.pptx-Presentation slides that summarises the Entire project.
