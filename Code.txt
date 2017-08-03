@@ -1,0 +1,45 @@
+//WEBLOG ANALYSIS
+
+//Format of the data-Combined log
+
+//Problem Statement-1-Find out the most viewed page
+
+//Code-
+
+pig -x local;
+
+REGISTER /home/demo/projectdata/piggybankjar/piggybank.jar;
+
+raw_data = LOAD '/home/demo/log' USING org.apache.pig.piggybank.storage.apachelog.CombinedLogLoader()AS (host:chararray, client: chararray, user:chararray, date:chararray, time:chararray, timezone:chararray, request:chararray, statuscode:int,bytes:int, page_link:chararray, browser:chararray);
+
+grpd_by_page = Group raw_data by page_link;
+
+page_hits = FOREACH grpd_by_page GENERATE flatten($0), COUNT($1) as page_count;
+
+
+ordrd_list = ORDER page_hits BY page_count DESC;
+
+Top_page = LIMIT ordrd_list 1;
+
+dump Top_page;
+
+STORE Top_page into '/home/demo/weblog1';
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//Problem Statement-2-Find total hits per unique day
+
+
+//Code-
+
+DEFINE DATE_EXTRACT org.apache.pig.piggybank.evaluation.util.apachelogparser.DateExtractor('dd/Mmm/yyyy:HH:mm:ss -d');
+
+grpd = Group raw_data BY DATE_EXTRACT(time);
+
+hits_per_day = foreach grpd GENERATE flatten($0) , COUNT($1);
+
+dump hits_per_day;
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
